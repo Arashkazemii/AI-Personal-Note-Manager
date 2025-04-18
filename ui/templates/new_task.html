@@ -1,146 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create New Task - Note AI Assistant</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            font-family: 'Poppins', sans-serif;
-            background-color: #f5f5f5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 80px;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if task %}Edit Task{% else %}Create New Task{% endif %} - Note AI Assistant</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #23a6d5, #23d5ab);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 80px;
+      box-sizing: border-box;
+      min-height: 100vh;
+    }
 
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 60px;
-            background: rgba(30, 30, 30, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            box-sizing: border-box;
-            z-index: 10;
-        }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: rgba(30, 30, 30, 0.85);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-sizing: border-box;
+      z-index: 100;
+    }
 
-        .logo {
-            font-weight: bold;
-            font-size: 20px;
-            color: white;
-        }
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: white;
+    }
 
-        .title {
-            font-size: 24px;
-            color: white;
-            font-weight: 600;
-        }
+    .title {
+      font-size: 24px;
+      color: white;
+      font-weight: 600;
+    }
 
-        .github {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .github {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-        .github a {
-            color: white;
-            font-size: 24px;
-            text-decoration: none;
-        }
+    .github a {
+      color: white;
+      font-size: 24px;
+      text-decoration: none;
+    }
 
-        .github span {
-            font-size: 14px;
-            color: white;
-            opacity: 0.8;
-        }
+    .form-container {
+      width: 90%;
+      max-width: 600px;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      animation: slideIn 0.6s ease;
+    }
 
-        form {
-            width: 90%;
-            max-width: 600px;
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-        }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        input, select, textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
+    input, select, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
 
-        button {
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            background-color: #23a6d5;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+    input:focus, select:focus, textarea:focus {
+      border-color: #23a6d5;
+      outline: none;
+      box-shadow: 0px 0px 5px rgba(35, 166, 213, 0.5);
+    }
 
-        button:hover {
-            background-color: #1e90c2;
-        }
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+    }
 
-        .button-group {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-    </style>
+    .btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-save {
+      background-color: #23a6d5;
+      color: white;
+    }
+
+    .btn-save:hover {
+      background-color: #1b8bb5;
+    }
+
+    .btn-cancel {
+      background-color: #f5f5f5;
+      color: #333;
+    }
+
+    .btn-cancel:hover {
+      background-color: #e0e0e0;
+    }
+
+  </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">NoteAI</div>
-    <div class="title">Note AI Assistant</div>
-    <div class="github">
-        <a href="https://github.com/Arashkazemii/AI-Personal-Note-Manager" target="_blank">
-            <i class="fab fa-github"></i>
-        </a>
-        <span>Notes Evolved.</span>
-    </div>
+  <div class="logo">NoteAI</div>
+  <div class="title">Note AI Assistant</div>
+  <div class="github">
+    <a href="https://github.com/Arashkazemii/AI-Personal-Note-Manager" target="_blank">
+      <i class="fab fa-github"></i>
+    </a>
+    <span>Notes Evolved</span>
+  </div>
 </header>
 
-<form method="POST" action="{{ url_for('add_task') }}">
-    <input type="text" name="title" placeholder="Task Title" required>
+<div class="form-container">
+  <form method="POST" action="{% if task %}{{ url_for('edit_task', task_id=task['id']) }}{% else %}{{ url_for('add_task') }}{% endif %}">
+    <input type="text" name="title" value="{{ task.title if task else '' }}" placeholder="Task Title" required>
 
-    <textarea name="description" placeholder="Task Description..." rows="5"></textarea>
+    <textarea name="description" placeholder="Task Description..." rows="5">{{ task.description if task else '' }}</textarea>
 
     <select name="priority" required>
-        <option value="">Select Priority</option>
-        <option value="High">High</option>
-        <option value="Medium">Medium</option>
-        <option value="Low">Low</option>
+      <option value="">Select Priority</option>
+      <option value="High" {% if task and task.priority == 'High' %}selected{% endif %}>High</option>
+      <option value="Medium" {% if task and task.priority == 'Medium' %}selected{% endif %}>Medium</option>
+      <option value="Low" {% if task and task.priority == 'Low' %}selected{% endif %}>Low</option>
     </select>
 
-    <input type="date" name="deadline">
+    <input type="date" name="deadline" value="{{ task.deadline[:10] if task and task.deadline }}">
 
     <div class="button-group">
-        <button type="submit">Save</button>
-        <button type="button" onclick="window.history.back();">Cancel</button>
+      <button type="submit" class="btn btn-save">{% if task %}Update{% else %}Save{% endif %}</button>
+      <button type="button" class="btn btn-cancel" onclick="window.history.back();">Cancel</button>
     </div>
-</form>
+  </form>
+</div>
 
 </body>
 </html>
