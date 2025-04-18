@@ -12,7 +12,7 @@
       width: 100%;
       height: 100%;
       font-family: 'Poppins', sans-serif;
-      background-color: #f5f5f5;
+      background-color: #f0f2f5;
       overflow-x: hidden;
     }
 
@@ -73,64 +73,131 @@
     }
 
     .column {
-      background: #ffffff;
-      border-radius: 12px;
-      width: 300px;
-      min-height: 500px;
+      background: white;
+      border-radius: 16px;
+      width: 320px;
+      min-height: 550px;
       padding: 20px;
       display: flex;
       flex-direction: column;
-      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .column.todo {
+      border-top: 8px solid #23a6d5;
+    }
+    .column.inprogress {
+      border-top: 8px solid #f0ad4e;
+    }
+    .column.done {
+      border-top: 8px solid #5cb85c;
     }
 
     .column h2 {
       margin-top: 0;
       text-align: center;
-      font-size: 20px;
+      font-size: 22px;
       color: #333;
+      margin-bottom: 20px;
     }
 
     .task {
-      background: #f0f0f0;
-      border-radius: 8px;
-      padding: 10px;
-      margin: 10px 0;
-      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      background: white;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.1);
       font-size: 14px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 10px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .task:hover {
+      transform: scale(1.02);
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .task.dragging {
+      opacity: 0.6;
+      transform: rotate(2deg) scale(1.05);
     }
 
     .task-title {
       font-weight: bold;
-      font-size: 16px;
+      font-size: 18px;
+      color: #333;
     }
 
     .task-desc {
       font-size: 13px;
-      color: #555;
+      color: #777;
     }
 
     .task-info {
       font-size: 12px;
-      color: #777;
+      color: #999;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .badge-high {
+      background-color: #ff4d4f;
+      color: white;
+    }
+
+    .badge-medium {
+      background-color: #ffa940;
+      color: white;
+    }
+    
+    .badge-low {
+      background-color: #52c41a;
+      color: white;
+    }
+
+    .edit-link {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: 14px;
+      color: #23a6d5;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .edit-link:hover {
+      color: #1e90c2;
     }
 
     .add-task-btn {
       margin-top: auto;
-      padding: 10px;
+      padding: 12px;
       background-color: #23a6d5;
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
       font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
 
     .add-task-btn:hover {
-      background-color: #1b8bb5;
+      background-color: #1e90c2;
     }
   </style>
 </head>
@@ -149,71 +216,111 @@
 
 <div class="board">
 
-    <div class="column" id="todo" ondragover="allowDrop(event)" ondrop="drop(event, 'To Do')">
+  <div class="column todo" id="todo" ondragover="allowDrop(event)" ondrop="drop(event, 'To Do')">
     <h2>To Do</h2>
     {% for task in todo %}
     <div class="task" draggable="true" ondragstart="drag(event)" data-id="{{ task.id }}">
-        <div class="task-title">{{ task.title }}</div>
-        <div class="task-desc">{{ task.description }}</div>
-        <div class="task-info">Priority: {{ task.priority }}</div>
-        {% if task.deadline %}
-        <div class="task-info">Deadline: {{ task.deadline }}</div>
+      <a href="{{ url_for('edit_task', task_id=task.id) }}" class="edit-link">
+        ✏️
+      </a>
+    
+      <div class="task-title">{{ task.title }}</div>
+    
+      <div class="task-desc">{{ task.description }}</div>
+    
+      <div class="task-info">
+        {% if task.priority == 'High' %}
+          <span class="badge badge-high">High</span>
+        {% elif task.priority == 'Medium' %}
+          <span class="badge badge-medium">Medium</span>
+        {% elif task.priority == 'Low' %}
+          <span class="badge badge-low">Low</span>
         {% endif %}
-      
-        <a href="{{ url_for('edit_task', task_id=task.id) }}" style="font-size: 12px; color: #23a6d5; text-decoration: none; margin-top: 5px;">
-          ✏️ Edit
-        </a>
-      </div>      
+      </div>
+    
+      {% if task.deadline %}
+      <div class="task-info">
+        ⏰ {{ task.deadline }}
+      </div>
+      {% endif %}
+    </div>    
     {% endfor %}
     <a href="{{ url_for('new_task') }}">
       <button class="add-task-btn">+ Add Task</button>
     </a>
   </div>
 
-  <div class="column" id="inprogress" ondragover="allowDrop(event)" ondrop="drop(event, 'In Progress')">
+  <div class="column inprogress" id="inprogress" ondragover="allowDrop(event)" ondrop="drop(event, 'In Progress')">
     <h2>In Progress</h2>
     {% for task in inprogress %}
     <div class="task" draggable="true" ondragstart="drag(event)" data-id="{{ task.id }}">
-      <div class="task-title">{{ task.title }}</div>
-      <div class="task-desc">{{ task.description }}</div>
-      <div class="task-info">Priority: {{ task.priority }}</div>
-      {% if task.deadline %}
-      <div class="task-info">Deadline: {{ task.deadline }}</div>
-      {% endif %}
-      
-      <a href="{{ url_for('edit_task', task_id=task.id) }}" style="font-size: 12px; color: #23a6d5; text-decoration: none; margin-top: 5px;">
-        ✏️ Edit
+      <a href="{{ url_for('edit_task', task_id=task.id) }}" class="edit-link">
+        ✏️
       </a>
-    </div>
+    
+      <div class="task-title">{{ task.title }}</div>
+    
+      <div class="task-desc">{{ task.description }}</div>
+    
+      <div class="task-info">
+        {% if task.priority == 'High' %}
+          <span class="badge badge-high">High</span>
+        {% elif task.priority == 'Medium' %}
+          <span class="badge badge-medium">Medium</span>
+        {% elif task.priority == 'Low' %}
+          <span class="badge badge-low">Low</span>
+        {% endif %}
+      </div>
+    
+      {% if task.deadline %}
+      <div class="task-info">
+        ⏰ {{ task.deadline }}
+      </div>
+      {% endif %}
+    </div>    
     {% endfor %}
   </div>
 
-  <div class="column" id="done" ondragover="allowDrop(event)" ondrop="drop(event, 'Done')">
+  <div class="column done" id="done" ondragover="allowDrop(event)" ondrop="drop(event, 'Done')">
     <h2>Done</h2>
     {% for task in done %}
     <div class="task" draggable="true" ondragstart="drag(event)" data-id="{{ task.id }}">
-      <div class="task-title">{{ task.title }}</div>
-      <div class="task-desc">{{ task.description }}</div>
-      <div class="task-info">Priority: {{ task.priority }}</div>
-      {% if task.deadline %}
-      <div class="task-info">Deadline: {{ task.deadline }}</div>
-      {% endif %}
-
-      <a href="{{ url_for('edit_task', task_id=task.id) }}" style="font-size: 12px; color: #23a6d5; text-decoration: none; margin-top: 5px;">
-        ✏️ Edit
+      <a href="{{ url_for('edit_task', task_id=task.id) }}" class="edit-link">
+        ✏️
       </a>
+    
+      <div class="task-title">{{ task.title }}</div>
+    
+      <div class="task-desc">{{ task.description }}</div>
+    
+      <div class="task-info">
+        {% if task.priority == 'High' %}
+          <span class="badge badge-high">High</span>
+        {% elif task.priority == 'Medium' %}
+          <span class="badge badge-medium">Medium</span>
+        {% elif task.priority == 'Low' %}
+          <span class="badge badge-low">Low</span>
+        {% endif %}
+      </div>
+    
+      {% if task.deadline %}
+      <div class="task-info">
+        ⏰ {{ task.deadline }}
+      </div>
+      {% endif %}
     </div>
+    
     {% endfor %}
   </div>
 
 </div>
 
-</body>
 <script>
   let draggedTaskId = null;
 
   function drag(event) {
     draggedTaskId = event.target.getAttribute('data-id');
+    event.target.classList.add('dragging');
   }
 
   function allowDrop(event) {
@@ -222,6 +329,11 @@
 
   function drop(event, newStatus) {
     event.preventDefault();
+
+    const draggingTask = document.querySelector('.dragging');
+    if (draggingTask) {
+      draggingTask.classList.remove('dragging');
+    }
 
     if (draggedTaskId) {
       fetch('/update_task_status', {
@@ -233,10 +345,12 @@
       })
       .then(response => {
         if (response.ok) {
-          location.reload(); // رفرش کنه که تغییر رو ببینیم
+          location.reload(); // رفرش برای نمایش جدید
         }
       });
     }
   }
 </script>
+
+</body>
 </html>
