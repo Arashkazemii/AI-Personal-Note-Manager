@@ -150,5 +150,17 @@ def update_task_status():
 
     return jsonify({'success': True})
 
+@app.route('/delete_task/<int:task_id>', methods=['POST'])
+def delete_task(task_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute('DELETE FROM Tasks WHERE id = ?', (task_id,))
+
+    conn.commit()
+    conn.close()
+
+    return '', 204
+
 if __name__ == '__main__':
     app.run(debug=True)
