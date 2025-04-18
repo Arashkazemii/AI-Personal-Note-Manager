@@ -52,6 +52,7 @@ def create_db():
             description TEXT NOT NULL,
             status TEXT NOT NULL,
             deadline TIMESTAMP,
+            priority TEXT DEFAULT 'Medium',
             created_at TIMESTAMP NOT NULL,
             FOREIGN KEY (note_id) REFERENCES Notes(id)
         )
