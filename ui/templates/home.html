@@ -1,181 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Note AI Assistant - Home</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* استایل‌ها همان قبلی */
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            overflow-x: hidden;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Note AI Assistant - Home</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      overflow-x: hidden;
+    }
 
-        @keyframes gradientBG {
-            0% {background-position: 0% 50%;}
-            50% {background-position: 100% 50%;}
-            100% {background-position: 0% 50%;}
-        }
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
 
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            box-sizing: border-box;
-            z-index: 10;
-        }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-sizing: border-box;
+      z-index: 100;
+    }
 
-        .logo {
-            font-weight: bold;
-            font-size: 20px;
-            color: white;
-        }
+    .logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: white;
+    }
 
-        .title {
-            font-size: 24px;
-            color: white;
-            font-weight: 600;
-        }
+    .title {
+      font-size: 24px;
+      color: white;
+      font-weight: 600;
+      margin-left: 110px;
+    }
 
-        .github {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .github {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-        .github a {
-            color: white;
-            font-size: 24px;
-            text-decoration: none;
-        }
+    .github a {
+      color: white;
+      font-size: 24px;
+      text-decoration: none;
+    }
 
-        .github span {
-            font-size: 14px;
-            color: white;
-            opacity: 0.8;
-        }
+    .github span {
+      font-size: 14px;
+      color: white;
+      opacity: 0.8;
+    }
 
-        .container {
-            padding-top: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    #menu-button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 26px;
+      cursor: pointer;
+      padding: 10px;
+    }
 
-        .add-button {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background-color: white;
-            color: #333;
-            font-size: 48px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            margin: 40px 0;
-        }
+    /* بلور و اوورلی */
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(5px);
+      background: rgba(0, 0, 0, 0.3);
+      display: none;
+      z-index: 99;
+    }
 
-        .add-button:hover {
-            transform: scale(1.1);
-            background-color: #f1f1f1;
-        }
+    /* منوی وسط صفحه */
+    #menu {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 400px;
+      background: rgba(0, 0, 0, 0.85);
+      border-radius: 16px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 20px;
+      z-index: 100;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
 
-        .text-below {
-            font-size: 24px;
-            color: white;
-        }
+    #menu a {
+      color: white;
+      text-decoration: none;
+      font-size: 20px;
+      margin: 12px 0;
+      transition: color 0.3s ease;
+    }
 
-        .notes-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 30px 20px; /* فاصله عمودی و افقی */
-            margin-top: 30px;
-            padding: 0 20px;
-        }
-        
-        .note-card {
-            background: rgba(255, 255, 255, 0.9);
-            width: calc(33.333% - 20px); /* سه تا در هر ردیف با فاصله */
-            min-width: 250px;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
-            text-align: left;
-            overflow: hidden;
-            box-sizing: border-box;
-        }        
+    #menu a:hover {
+      color: #23a6d5;
+    }
 
-        .note-card h3 {
-            margin: 0 0 10px 0;
-            font-size: 20px;
-        }
+    .menu-divider {
+      width: 80%;
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.2);
+      margin: 20px 0;
+    }
 
-        .note-card p {
-            font-size: 14px;
-            color: #555;
-            height: 80px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+    .creator {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #aaa;
+    }
 
-        .note-card .priority {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #888;
-        }
+    .container {
+      padding-top: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-    </style>
+    .add-button {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background-color: white;
+      color: #333;
+      font-size: 48px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      margin: 40px 0;
+    }
+
+    .add-button:hover {
+      transform: scale(1.1);
+      background-color: #f1f1f1;
+    }
+
+    .text-below {
+      font-size: 24px;
+      color: white;
+    }
+
+    .notes-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px 20px;
+      margin-top: 30px;
+      padding: 0 20px;
+    }
+
+    .note-card {
+      background: rgba(255, 255, 255, 0.9);
+      width: calc(33.333% - 20px);
+      min-width: 250px;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+      text-align: left;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .note-card h3 {
+      margin: 0 0 10px 0;
+      font-size: 20px;
+    }
+
+    .note-card p {
+      font-size: 14px;
+      color: #555;
+      height: 80px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .note-card .priority {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
 </head>
+
 <body>
 
 <header>
-    <div class="logo">NoteAI</div>
-    <div class="title">Note AI Assistant</div>
-    <div class="github">
-        <a href="https://github.com/Arashkazemii/AI-Personal-Note-Manager" target="_blank">
-            <i class="fab fa-github"></i>
-        </a>
-        <span>Notes Evolved</span>
-    </div>
+  <div class="logo">NoteAI</div>
+  <div class="title">Note AI Assistant</div>
+  <div class="github">
+    <a href="https://github.com/Arashkazemii/AI-Personal-Note-Manager" target="_blank">
+      <i class="fab fa-github"></i>
+    </a>
+    <span>Notes Evolved</span>
+    <button id="menu-button"><i class="fas fa-bars"></i></button>
+  </div>
 </header>
 
-<div class="container">
-    {% if notes|length == 0 %}
-        <a href="{{ url_for('new_note') }}" class="add-button">+</a>
-        <div class="text-below">Create your first note!</div>
-    {% else %}
-        <a href="{{ url_for('new_note') }}" class="add-button">+</a>
-        <div class="notes-list">
-            {% for note in notes %}
-                <div class="note-card">
-                    <h3>{{ note.title }}</h3>
-                    <p>{{ note.content }}</p>
-                    <div class="priority">Priority: {{ note.priority }}</div>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
+<div id="overlay"></div>
+
+<div id="menu">
+  <a href="{{ url_for('home') }}">Home</a>
+  <a href="{{ url_for('new_note') }}">New Note</a>
+  <a href="#">Tasks</a>
+  <a href="#">AI Suggestions</a>
+  <a href="#">Settings</a>
+  <div class="menu-divider"></div>
+  <div class="creator">
+    <a href="https://github.com/Arashkazemii" target="_blank">Cr by Arashkazemii</a>
+  </div>
 </div>
+
+<div class="container">
+  {% if notes|length == 0 %}
+    <a href="{{ url_for('new_note') }}" class="add-button">+</a>
+    <div class="text-below">Create your first note!</div>
+  {% else %}
+    <a href="{{ url_for('new_note') }}" class="add-button">+</a>
+    <div class="notes-list">
+      {% for note in notes %}
+        <div class="note-card">
+          <h3>{{ note.title }}</h3>
+          <p>{{ note.content }}</p>
+          <div class="priority">Priority: {{ note.priority }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  const menuButton = document.getElementById('menu-button');
+  const menu = document.getElementById('menu');
+  const overlay = document.getElementById('overlay');
+
+  menuButton.addEventListener('click', () => {
+    menu.style.display = 'flex';
+    overlay.style.display = 'block';
+  });
+
+  overlay.addEventListener('click', () => {
+    menu.style.display = 'none';
+    overlay.style.display = 'none';
+  });
+
+  // اگر روی خود منو کلیک نشد، بسته بشه
+  window.addEventListener('click', function(e) {
+    if (menu.style.display === 'flex' && !menu.contains(e.target) && e.target !== menuButton) {
+      menu.style.display = 'none';
+      overlay.style.display = 'none';
+    }
+  });
+</script>
 
 </body>
 </html>
