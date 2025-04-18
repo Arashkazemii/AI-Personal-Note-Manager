@@ -63,5 +63,72 @@ def add_note():
 
     return redirect(url_for('home'))
 
+@app.route('/tasks')
+def tasks():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT * FROM Tasks')
+    tasks = cursor.fetchall()
+
+    todo = [task for task in tasks if task['status'] == 'To Do']
+    inprogress = [task for task in tasks if task['status'] == 'In Progress']
+    done = [task for task in tasks if task['status'] == 'Done']
+
+    conn.close()
+    return render_template('tasks.html', todo=todo, inprogress=inprogress, done=done)
+
+@app.route('/new_task')
+def new_task():
+    return render_template('new_task.html')
+
+@app.route('/add_task', methods=['POST'])
+def add_task():
+    title = request.form.get('title')
+    description = request.form.get('description')
+    priority = request.form.get('priority')
+    deadline = request.form.get('deadline')
+
+    if not title or not priority:
+        return "Title and Priority are required!", 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        INSERT INTO Tasks (title, description, priority, deadline, status, created_at)
+        VALUES (?, ?, ?, ?, ?, ?)
+    ''', (title, description, priority, deadline, 'To Do', datetime.now()))
+
+    conn.commit()
+    conn.close()
+    return redirect(url_for('tasks'))
+
+@app.route('/edit_task/<int:task_id>', methods=['GET', 'POST'])
+def edit_task(task_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        title = request.form.get('title')
+        description = request.form.get('description')
+        priority = request.form.get('priority')
+        deadline = request.form.get('deadline')
+
+        cursor.execute('''
+            UPDATE Tasks
+            SET title = ?, description = ?, priority = ?, deadline = ?
+            WHERE id = ?
+        ''', (title, description, priority, deadline, task_id))
+
+        conn.commit()
+        conn.close()
+        return redirect(url_for('tasks'))
+    else:
+        cursor.execute('SELECT * FROM Tasks WHERE id = ?', (task_id,))
+        task = cursor.fetchone()
+        conn.close()
+        return render_template('edit_task.html', task=task)
+
 if __name__ == '__main__':
     app.run(debug=True)
