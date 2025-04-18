@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note AI Assistant - Home</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 20px;
+            color: white;
+        }
+
+        .title {
+            font-size: 24px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .github {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .github a {
+            color: white;
+            font-size: 24px;
+            text-decoration: none;
+        }
+
+        .github span {
+            font-size: 14px;
+            color: white;
+            opacity: 0.8;
+        }
+
+        .background {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        @keyframes gradientBG {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+
+        .add-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: white;
+            color: #333;
+            font-size: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .add-button:hover {
+            transform: scale(1.1);
+            background-color: #f1f1f1;
+        }
+
+        .text-below {
+            font-size: 24px;
+            color: white;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">NoteAI</div>
+        <div class="title">Note AI Assistant</div>
+        <div class="github">
+            <a href="https://github.com/Arashkazemii/AI-Personal-Note-Manager" target="_blank">
+                <i class="fab fa-github"></i>
+            </a>
+            <span>Notes Evolved</span>
+        </div>
+    </header>
+
+    <div class="background">
+        <a href="{{ url_for('new_note') }}" class="add-button">+</a>
+        <div class="text-below">Create your first note!</div>
+    </div>
+
+</body>
+</html>
