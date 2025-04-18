@@ -14,7 +14,10 @@ def get_db_connection():
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    conn = get_db_connection()
+    notes = conn.execute('SELECT * FROM Notes ORDER BY created_at DESC LIMIT 6').fetchall()
+    conn.close()
+    return render_template('home.html', notes=notes)
 
 @app.route('/new_note')
 def new_note():
