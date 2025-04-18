@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, url_for, render_template
+from flask import Flask, request, redirect, url_for, render_template, jsonify
 import sqlite3
 import os
 from datetime import datetime
@@ -129,6 +129,26 @@ def edit_task(task_id):
         task = cursor.fetchone()
         conn.close()
         return render_template('edit_task.html', task=task)
+
+@app.route('/update_task_status', methods=['POST'])
+def update_task_status():
+    data = request.get_json()
+    task_id = data['task_id']
+    new_status = data['status']
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        UPDATE Tasks
+        SET status = ?
+        WHERE id = ?
+    ''', (new_status, task_id))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({'success': True})
 
 if __name__ == '__main__':
     app.run(debug=True)
